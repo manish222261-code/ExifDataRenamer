@@ -6,7 +6,8 @@ This is a File Renamer written in Java , which read exif data of file like Date 
 ## Screenshots
 This is a Example on Android using Jvdroid App (Jvdroid is only available for arm64 cpu)
 
-![terminal](https://github.com/user-attachments/assets/3019cfdf-f26c-4640-b906-094baac77c99)
+![terminal](https://github.com/user-attachments/assets/aea6155f-c166-4043-a43d-6786d8734748)
+
 
 
 
