@@ -1,38 +1,36 @@
-# Exif Data Renamer
+
+# Java Exif Data Renamer
 
 This is a File Renamer written in Java , which read exif data of file like Date and Time and rename file for better sorting!
 
 
 ## Screenshots
-This is a Example on Android using Jvdroid App (Jvdroid is only available for arm64 cpu)
-
-![terminal](https://github.com/user-attachments/assets/aea6155f-c166-4043-a43d-6786d8734748)
 
 
+![WhatsApp Image 2025-03-19 at 12 11 20_904b2896](https://github.com/user-attachments/assets/9fe5d9e0-fed5-4404-ad7a-8e98b448c6a5)
+
+
+## Usage
+    FolderPath:
+
+    For Android = "/storage/emulated/0/TEST/";
+    For Windows = "C:\Users\XYZ\Pictures\Photos";
+    
+    Format = "yyyy-MM-dd_HH-mm-ss" (by Default)
+    
+
+    Command Line Argument:
+
+    java -jar ExifDataRenamer-1.0.jar arg1 arg2
+    arg1 - FolderPath (Required)
+    arg2 - Format (Optional)
 
 
 
-## Usage/Examples
+##  Example
 
-Make sure you have Right Permission to Access Folder.
-
-  Example :- 
-
-    Folder Path for Android = "/storage/emulated/0/TEST/";
-
-    Folder Path for Windows = "C:\Users\XYZ\Pictures\Photos";
-
-    String FolderName = ""; // Enter the Proper FolderPath
-
-  ## Change your Formatter Pattern
-
-     public static String formatDate(ZonedDateTime zonedDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        return formatter.format(zonedDateTime);
-    }
-
-Go to /src/main/java/ExifDataRenamer.java and replace your Folder Name and Formatter Pattern.
-        
+    
+    java -jar ExifDataRenamer-1.0.jar /storage/emulated/0/TEST/ yyy-MM-dd_HH-mm-ss
 
 
 ## Dependencies
@@ -41,3 +39,4 @@ This Project use [metadata-extractor](https://github.com/drewnoakes/metadata-ext
 ## Authors
 
 - [@manish222261](https://github.com/manish222261-code/)
+
