@@ -20,48 +20,67 @@ import com.drew.metadata.exif.ExifDirectoryBase;
 
 public class ExifDataRenamer {
 
-    public static void main(String[] args) {
-    	
-        // Enter Here the Folder Name which you want to Rename Photos and Videos
-        
-        // Folder Path for Android = "/storage/emulated/0/TEST/";
-        // Folder Path for Windows = "C:\Users\XYZ\Pictures\Photos";
+    // Enter Here the Folder Name which you want to Rename Photos and Videos
+    // This Argument is Required
 
-        String FolderName = ""; // Enter the Proper FolderPath
-        
-        
-        File directory = new File(FolderName);
+    // Folder Path for Android = "/storage/emulated/0/TEST/";
+    // Folder Path for Windows = "C:\Users\XYZ\Pictures\Photos";
+
+    private static String FolderPath = ""; // Enter the Proper FolderPath
+
+
+
+    // This Format is Optional Arguments
+    private static String Format = "yyyy-MM-dd_HH-mm-ss";
+
+    public static void main(String[] args) {
+
+        // Processing Arguments from Command Line
+        processArguments(args);
+
+
+
+
+        File directory = new File(FolderPath);
         File[] files = directory.listFiles();
         
         // This will check whether files are present or not in given Folder
-        
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile()) {
-                    try {
-                        Optional<Instant> instantOptional = extractDateTime(file.toPath());
-                        
-                        if (instantOptional.isPresent()) {
-                            Instant instant = instantOptional.get();
-                            
-                            // Convert to IST if the file is an MP4
-                            boolean isMp4 = file.getName().toLowerCase().endsWith(".mp4");
-                            ZonedDateTime zonedDateTime = isMp4 ? instant.atZone(ZoneId.of("GMT")).withZoneSameInstant(ZoneId.of("Asia/Kolkata")) : instant.atZone(ZoneId.systemDefault());
 
-                            String formattedDateTime = formatDate(zonedDateTime);
-                            String newFileName = formattedDateTime + "." + getFileExtension(file);
-                            Path newPath = file.toPath().resolveSibling(newFileName);
-                            Files.move(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
-                            System.out.println("File renamed: " + newFileName);
-                        } else {
-                            System.out.println("Failed to extract DateTime from file: " + file.getName());
+        if (directory.exists() && directory.isDirectory()){
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        try {
+                            Optional<Instant> instantOptional = extractDateTime(file.toPath());
+
+                            if (instantOptional.isPresent()) {
+                                Instant instant = instantOptional.get();
+
+                                // Convert to IST if the file is an MP4
+                                boolean isMp4 = file.getName().toLowerCase().endsWith(".mp4");
+                                ZonedDateTime zonedDateTime = isMp4 ? instant.atZone(ZoneId.of("GMT")).withZoneSameInstant(ZoneId.of("Asia/Kolkata")) : instant.atZone(ZoneId.systemDefault());
+
+                                String formattedDateTime = formatDate(zonedDateTime);
+                                String newFileName = formattedDateTime + "." + getFileExtension(file);
+                                Path newPath = file.toPath().resolveSibling(newFileName);
+                                Files.move(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
+                                System.out.println("File renamed: " + newFileName);
+                            } else {
+                                System.out.println("Failed to extract DateTime from file: " + file.getName());
+                            }
+                        } catch (IOException | ImageProcessingException e) {
+                            System.err.println("Error processing file: " + file.getName() + " - " + e.getMessage());
                         }
-                    } catch (IOException | ImageProcessingException e) {
-                        System.err.println("Error processing file: " + file.getName() + " - " + e.getMessage());
                     }
                 }
+            } else {
+                System.out.println("Your don't have a valid permission to access FolderPath");
             }
+        } else {
+            System.out.println("Enter a Valid a FolderPath");
+            System.exit(1);
         }
+
 
 
 
@@ -103,12 +122,26 @@ public class ExifDataRenamer {
     // This Function will Format the DateTime in desired Pattern.
     
     public static String formatDate(ZonedDateTime zonedDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Format);
         return formatter.format(zonedDateTime);
     }
 
     public static String getFileExtension(File file) {
         String fileName = file.getName();
         return fileName.substring(fileName.lastIndexOf('.') + 1);
+    }
+
+    public static void processArguments(String [] args){
+
+        if (args.length > 0){
+            FolderPath = args[0];
+        }else{
+            System.out.println("FolderPath is Required!");
+            System.exit(1);
+        }
+
+        if (args.length > 1){
+            Format = args[1];
+        }
     }
 }
